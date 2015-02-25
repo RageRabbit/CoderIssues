@@ -42,8 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CormenBookTasks.cs" />
+    <Compile Include="GoogleCodeJam.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProjectEuler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TopCoder.cs" />
+    <Compile Include="TopCoder2012.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
