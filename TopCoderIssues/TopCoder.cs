@@ -146,8 +146,12 @@ namespace TopCoderIssues
             //"NNNNNNNNNNNNNNNNYNNY", "YNNNNNNNNNNNNYYYNYNN", "NNNNYNNNNNNNNYYNNNNN", "NYNNNNNNNYNNNNNNNNNN", "NNNNNNNNYNNNYNNNNNYN",
             //"NNNYNNNNNNNNNNYNNNNN", "NNNNNNNNNNNNNNNNNNNN", "NNNNNNNNNYNNNNNNNYNN", "NNNNYNYYNNNNNNNNNNNN", "YNNNNNYYNNYNNNNNNNNN",
             //"YNNNNNYNNNNNNNNNYNNN", "NNNNNYNNNNNNNNNYNYNN", "NNNNNNYNNNNNYNNNYNNN", "NNNNYNNNNYNNNNNNNNNN", "YNNNNYNNNNNNNNNNNNNN"});
-            (new SRM648.Fragile2()).countPairs(new[] {"NYNYNNYYNN", "YNNNYNYYNN", "NNNNYNNNYN", "YNNNYYNNNN", "NYYYNNNNYN",
- "NNNYNNNNYN", "YYNNNNNNNN", "YYNNNNNNYN", "NNYNYYNYNY", "NNNNNNNNYN"});
+ 
+            //           (new SRM648.Fragile2()).countPairs(new[] {"NYNYNNYYNN", "YNNNYNYYNN", "NNNNYNNNYN", "YNNNYYNNNN", "NYYYNNNNYN",
+ //"NNNYNNNNYN", "YYNNNNNNNN", "YYNNNNNNYN", "NNYNYYNYNY", "NNNNNNNNYN"});
+
+			//(new SRM650.TaroJiroDividing()).getNumber(8, 4);
+			(new SRM650.TaroFillingAStringDiv2()).getNumber("?BB?BAAB???BAB?B?AAAA?ABBA????A?AAB?BBA?A?");
         }
 
         public class SRM572
@@ -3533,6 +3537,100 @@ namespace TopCoderIssues
                     return count;
                 }
             }
+        }
+
+        public class SRM650
+        {
+            public class TaroJiroDividing
+            {
+                public int getNumber(int A, int B)
+                {
+                    var Ahash = new List<int>() { A };
+                    var Bhash = new List<int>() { B };
+                    while (A % 2 != 1)
+                    {
+                        A /= 2;
+                        Ahash.Add(A);
+                    }
+                    while (B % 2 != 1)
+                    {
+                        B /= 2;
+                        Bhash.Add(B);
+                    }
+                    var count = Ahash.Intersect(Bhash).Count();
+                    return count;
+                }
+            }
+
+			public class TaroFillingAStringDiv2
+			{
+				private int beautify(string s)
+				{
+					var s2 = "" + s[0];
+					var prev = s[0];
+					var uglyc = 0;
+					for (int i = 1; i < s.Length; i++)
+					{
+						var curr = s[i];
+						if (curr == '?')
+						{
+							if (prev == 'A')
+							{
+								curr = 'B';
+							}
+							else
+							{
+								curr = 'A';
+							}
+						}
+						if (prev == curr)
+						{
+							uglyc++;
+						}
+						s2 += curr;
+						prev = curr;
+					}
+					return uglyc;
+				}
+
+				public int getNumber(String S)
+				{
+					var uglyc = 0;
+					var qcount = 0;
+					for (int i=1; i<S.Length; i++)
+					{
+						if (S[i-1] == '?')
+						{
+							qcount++;
+							continue;
+						}
+						else if (S[i] == '?')
+						{
+							continue;
+						}
+						else if (S[i-1] == S[i])
+						{
+							uglyc++;
+						}
+					}
+					if (qcount == 0)
+					{
+						return uglyc;
+					}
+					var res = 0;
+					if (S[0] == '?')
+					{
+						var c1 = beautify("A" + S.Substring(1));
+						var c2 = beautify("B" + S.Substring(1));
+						res = Math.Min(c1, c2);
+					}
+					else
+					{
+						res = beautify(S);
+					}
+					return res;
+				}
+			}
         }
 
         public class TCO2013
