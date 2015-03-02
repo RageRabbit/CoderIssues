@@ -151,7 +151,9 @@ namespace TopCoderIssues
  //"NNNYNNNNYN", "YYNNNNNNNN", "YYNNNNNNYN", "NNYNYYNYNY", "NNNNNNNNYN"});
 
 			//(new SRM650.TaroJiroDividing()).getNumber(8, 4);
-			(new SRM650.TaroFillingAStringDiv2()).getNumber("?BB?BAAB???BAB?B?AAAA?ABBA????A?AAB?BBA?A?");
+			//(new SRM650.TaroFillingAStringDiv2()).getNumber("?BB?BAAB???BAB?B?AAAA?ABBA????A?AAB?BBA?A?");
+			//(new SRM650.TheKingsRoadsDiv2()).getAnswer(3, new[] { 1, 2, 3, 7, 1, 5, 4 }, new[] { 6, 7, 4, 3, 3, 1, 7 });
+			(new SRM649.DecipherabilityEasy()).check("sunuke", "snuke");
         }
 
         public class SRM572
@@ -3539,6 +3541,25 @@ namespace TopCoderIssues
             }
         }
 
+		public class SRM649
+		{
+			public class DecipherabilityEasy
+			{
+				public String check(String s, String t)
+				{
+					for (int i=0; i<s.Length; i++)
+					{
+						var news = s.Substring(0, i) + s.Substring(i + 1);
+						if (t == news)
+						{
+							return "Possible";
+						}
+					}
+					return "Impossible";
+				}
+			}
+		}
+
         public class SRM650
         {
             public class TaroJiroDividing
@@ -3629,6 +3650,134 @@ namespace TopCoderIssues
 						res = beautify(S);
 					}
 					return res;
+				}
+			}
+
+			public class TheKingsRoadsDiv2
+			{
+				bool foundCorrect = false;
+
+				private void search(int h, HashSet<int> av, List<int> used, int[] a, int[] b, int selfCount)
+				{
+					if (av.Count == 0)
+					{
+						var usedSelf = false;
+						for (int i = 0; i < used.Count - 1; i++)
+						{
+							// 1 - 2,3
+							// 2 - 1,4,5
+							// 3 - 1,6,7
+							// 4 - 2,8,9
+							// 5 - 2,10,11
+							// 6 - 3,12,13
+							// 7 - 3,14,15
+							var pos = i + 1;
+							var roadCount = 0;
+							for (int j = 0; j < a.Length; j++)
+							{
+								if (a[j] == b[j])
+								{
+									usedSelf = true;
+									continue;
+								}
+								if (a[j] == used[i] && b[j] > used[i])
+								{
+									roadCount++;
+								}
+								else if (b[j] == used[i] && a[j] > used[i])
+								{
+									roadCount++;
+								}
+								if (roadCount < 2)
+								{
+									return;
+								}
+							}
+						}
+						foundCorrect = true;
+					}
+					else
+					{
+						for (var i=1; i<=h; i++)
+						{
+							if (!av.Contains(i))
+							{
+								continue;
+							}
+							av.Remove(i);
+							used.Add(i);
+							search(h, av, used, a, b, selfCount);
+							used.Remove(i);
+							av.Add(i);
+						}
+					}
+				}
+
+				private void deepSearch(int avH, HashSet<int> used, int[] a, int[] b, int excludeIndex)
+				{
+					foreach (var unum in used.ToArray())
+					{
+						var numconnections = new List<int>();
+						for (int i = 0; i < a.Length; i++)
+						{
+							if (i == excludeIndex)
+							{
+								continue;
+							}
+							if (a[i] == unum)
+							{
+								numconnections.Add(b[i]);
+							}
+							else if (b[i] == unum)
+							{
+								numconnections.Add(a[i]);
+							}
+						}
+					}
+				}
+
+				public string getAnswer(int h, int[] a, int[] b)
+				{
+					if (a.Length < Math.Pow(2, h) - 1)
+					{
+						return "Incorrect";
+					}
+					var selfCount = 0;
+					var selfIndex = 0;
+					for (int i=0; i<a.Length; i++)
+					{
+						if (a[i] == b[i])
+						{
+							selfCount++;
+							selfIndex = i;
+						}
+					}
+					if (selfCount > 1)
+					{
+						return "Incorrect";
+					}
+					var avH = (int)Math.Pow(2, h) - 1;
+
+					for (int i = 1; i <= avH; i++)
+					{
+						if (selfCount == 1)
+						{
+							deepSearch(avH, new HashSet<int>(new[] { i }), a, b, selfIndex);
+						}
+						else
+						{
+							for (int j = 0; j < a.Length; j++)
+							{
+								deepSearch(avH, new HashSet<int>(new[] { i }), a, b, j);
+							}
+						}
+					}
+
+					//search(avH, new HashSet<int>(Enumerable.Range(1, avH)), new List<int>(), a, b, selfCount);
+					//var res = foundCorrect ? "Correct" : "Incorrect";
+					//return res;
+
+					throw new NotImplementedException();
 				}
 			}
         }
